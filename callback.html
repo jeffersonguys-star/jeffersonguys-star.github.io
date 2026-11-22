@@ -1,0 +1,35 @@
+<!doctype html>
+<html lang="pt-BR">
+<head>
+<meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Login concluído</title>
+<style>
+body{font-family:system-ui,sans-serif;max-width:640px;margin:32px auto;padding:0 18px;line-height:1.5;color:#1b1b1b}
+textarea{width:100%;height:150px;font-size:14px;padding:10px;border-radius:10px;border:1px solid #bbb;box-sizing:border-box}
+button{margin-top:12px;width:100%;padding:14px;font-size:17px;border:0;border-radius:10px;background:#0b6b4a;color:#fff}
+.erro{color:#b00020}
+</style>
+</head>
+<body>
+<h1>Login concluído</h1>
+<p id="instrucao">Copie o endereço abaixo e cole no Termux.</p>
+<textarea id="endereco" readonly></textarea>
+<button id="copiar">Copiar endereço</button>
+<p id="status"></p>
+<script>
+  var campo = document.getElementById('endereco');
+  campo.value = window.location.href;
+  var params = new URLSearchParams(window.location.search);
+  if (params.get('error')) {
+    document.getElementById('instrucao').className = 'erro';
+    document.getElementById('instrucao').textContent = 'O login foi recusado: ' + (params.get('error_description') || params.get('error')) + '. Tente novamente.';
+  }
+  document.getElementById('copiar').onclick = function () {
+    campo.select();
+    var feito = function () { document.getElementById('status').textContent = 'Endereço copiado. Volte ao Termux e cole.'; };
+    if (navigator.clipboard) navigator.clipboard.writeText(campo.value).then(feito, function () { document.execCommand('copy'); feito(); });
+    else { document.execCommand('copy'); feito(); }
+  };
+</script>
+</body>
+</html>
